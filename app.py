@@ -44,6 +44,20 @@ def index():
     # Render the 'index.html' template and pass the tasks to it
     return render_template('index.html', tasks=tasks)
 
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_task(id):
+    # Get the task with the specified ID from the database
+    task = Todo.query.get(id)
+
+    # Delete the task from the database
+    db.session.delete(task)
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Redirect the user to the root URL
+    return redirect('/')
+
 # Check if the script is being executed as the main program
 if __name__ == '__main__':
     # Run the Flask app in debug mode
