@@ -63,7 +63,7 @@ def toggle_complete(id):
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_task(id):
-    task = Todo.query.get(id)
+    task = Todo.query.get_or_404(id)
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for('index'))
