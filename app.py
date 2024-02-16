@@ -43,25 +43,30 @@ def index():
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_task(id):
-    task_to_edit = next((task for task in Todo.query.all() if task.id == id), None)
+    task_to_edit = Todo.query.get_or_404(id)
 
-    if task_to_edit:
-        if request.method == 'POST':
-            new_task_name = request.form['task_name']
-            if not is_duplicate_task(new_task_name):
-                task_to_edit.task_name = new_task_name
-                db.session.commit()
-                return redirect('/')
-        return render_template('edit.html', task=task_to_edit)
-    else:
-        return redirect('/')
+    if request.method == 'POST':
+        new_task_name = request.form['task_name']
+        if not is_duplicate_task(new_task_name):
+            task_to_edit.task_name = new_task_name
+            db.session.commit()
+            return redirect(url_for('index'))
+    return render_template('edit.html', task=task_to_edit)
+
+@app.route('/toggle_complete/<int:id>', methods=['POST'])
+def toggle_complete(id):
+    task_to_toggle = Todo.query.get_or_404(id)
+    task_to_toggle.completed = not task_to_toggle.completed
+    db.session.commit()
+
+    return redirect(url_for('index'))
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_task(id):
     task = Todo.query.get(id)
     db.session.delete(task)
     db.session.commit()
-    return redirect('/')
+    return redirect(url_for('index'))
 
 # Check if the script is being executed as the main program
 if __name__ == '__main__':
