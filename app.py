@@ -22,8 +22,8 @@ class Todo(db.Model):
 # Create the 'todo' table in the database if it doesn't exist
 db.create_all()
 
-# Define a route for the root URL ('/add-new-task') with support for GET and POST methods
-@app.route('/add-new-task', methods=['GET', 'POST'])
+# Define a route for the root URL with support for GET and POST methods
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         # If the request method is POST (from submission), extract the task_name from the form data
